@@ -1,21 +1,23 @@
-//import students
-const dataStudents = require("../data/students");
-//buat class student controllerr
+const Student = require("../model/Student")
 class StudentController {
-    index(req, res){
+  //menambahkan keywors async
+    async index(req, res){
+      //memanggil method static all dengan async await
+        const students = await Student.all();
         const data = {
             message: `Menampilkan semua data student`,
-            data: dataStudents
+            data: students,
         }
         res.json(data);
     }
 
-    store(req, res){
-        const { nama } = req.body;
-        dataStudents.push(nama);
+    async store(req, res){
+        const { nama, nim, email, jurusan } = req.body;
+        //memanggil method static create dengan async await
+        const students = await Student.create(req.body);
         const data = {
-            message: `Menambahkan data student: ${nama}`,
-            data: dataStudents,
+            message: `Menambahkan data student`,
+            data: students,
         }
         res.json(data);
     }
