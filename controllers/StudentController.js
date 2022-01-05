@@ -22,32 +22,46 @@ class StudentController {
         res.json(data);
     }
 
-    update(req, res) {
+    async update(req, res) {
         const { id } = req.params;
-        const { nama } = req.body;
-        dataStudents[id] = nama;
-    
-        const data = {
-          message: `Mengedit student id ${id}, nama ${nama}`,
-          data: dataStudents,
-        };
-    
-        res.json(data);
-      }
-    
-      destroy(req, res) {
-        const { id } = req.params;
-        dataStudents.splice(id, 1);
-      
-        const data = {
-          message: `Menghapus student id ${id}`,
-          data: dataStudents,
-        };
-    
-        res.json(data);
-    }
-}
+        //const { nama } = req.body;
+        //dataStudents[id] = nama;
+        const students = await Student.find(id);
+        if (students){
+          const studentUptaded = await Student.update(id, req.body);
 
+          const data = {
+            message: `Menampilkan data student`,
+            data: studentUptaded,
+        }
+          res.status(200).json(data);
+        } 
+        else {
+          const data = {
+            message: `Data not found`,
+          };
+      
+          res.status(404).json(data);
+        };
+      }
+      async destroy(req, res) {
+        const { id } = req.params;
+        const students = await Student.find(id);
+        if (students) {
+          await Student.delete(id);
+          const data = {
+            message: `Menghapus data student`,
+          };
+          res.status(200).json(data);
+        }
+        else{
+          const data = {
+            message: `Data not found`,
+          };
+          res.status(404).json(data);
+        }
+    };
+}
 const object = new StudentController();
 
 //export
